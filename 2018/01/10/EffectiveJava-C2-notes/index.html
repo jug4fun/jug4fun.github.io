@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>[EffectiveJava] C2 notes - Jlog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content=生活,博客,前端,游戏>
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Jlog" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Jlog</a>
+    <div class="subtitle"></div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/about" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">[EffectiveJava] C2 notes</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2018-01-10</span>
+  </div>
+  <div class="post-content">
+    <p>Item 1: Consider static factory methods instead of constructors</p>
+<ul>
+<li><p>One advantage of static factory methods is that, unlike constructors, they have names.</p>
+</li>
+<li><p>A second advantage of static factory methods is that, unlike constructors,<br>they are not required to create a new object each time they’re invoked.</p>
+</li>
+<li><p>A third advantage of static factory methods is that, unlike constructors,<br>they can return an object of any subtype of their return type.</p>
+</li>
+<li><p>A fourth advantage of static factory methods is that they reduce the verbosity of creating parameterized type instances:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// type parameters twice</span><br><span class="line">Map&lt;String, List&lt;String&gt;&gt; m = new HashMap&lt;String, List&lt;String&gt;&gt;();</span><br><span class="line"></span><br><span class="line">// known as type inference</span><br><span class="line">public static &lt;K, V&gt; HashMap&lt;K, V&gt; newInstance() &#123;</span><br><span class="line">       return new HashMap&lt;K, V&gt;();</span><br><span class="line">&#125;</span><br><span class="line">// no need to do wordy declaration</span><br><span class="line">Map&lt;String, List&lt;String&gt;&gt; m = HashMap.newInstance();</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<p>Item 2: Consider a builder when faced with many constructor parameters</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">// Builder Pattern</span><br><span class="line">public class NutritionFacts &#123;</span><br><span class="line">    private final int servingSize;</span><br><span class="line">    private final int servings;</span><br><span class="line">    private final int calories;</span><br><span class="line">    private final int fat;</span><br><span class="line">    private final int sodium;</span><br><span class="line">    private final int carbohydrate;</span><br><span class="line">    public static class Builder &#123;</span><br><span class="line">        // Required parameters</span><br><span class="line">        private final int servingSize;</span><br><span class="line">        private final int servings;</span><br><span class="line">        // Optional parameters - initialized to default values</span><br><span class="line">        private int calories      = 0;</span><br><span class="line">        private int fat           = 0;</span><br><span class="line">        private int carbohydrate  = 0;</span><br><span class="line">        private int sodium        = 0;</span><br><span class="line">        public Builder(int servingSize, int servings) &#123;</span><br><span class="line">            this.servingSize = servingSize;</span><br><span class="line">            this.servings    = servings;</span><br><span class="line">        &#125;</span><br><span class="line">        public Builder calories(int val)</span><br><span class="line">            &#123; calories = val;      return this; &#125;</span><br><span class="line">        public Builder fat(int val)</span><br><span class="line">            &#123; fat = val;           return this; &#125;</span><br><span class="line">        public Builder carbohydrate(int val)</span><br><span class="line">            &#123; carbohydrate = val;  return this; &#125;</span><br><span class="line">        public Builder sodium(int val)</span><br><span class="line">            &#123; sodium = val;        return this; &#125;</span><br><span class="line">        public NutritionFacts build() &#123;</span><br><span class="line">            return new NutritionFacts(this);&#125; </span><br><span class="line">    &#125;</span><br><span class="line">    private NutritionFacts(Builder builder) &#123;</span><br><span class="line">        servingSize  = builder.servingSize;</span><br><span class="line">        servings     = builder.servings;</span><br><span class="line">        calories     = builder.calories;</span><br><span class="line">        fat          = builder.fat;</span><br><span class="line">        sodium       = builder.sodium;</span><br><span class="line">        carbohydrate = builder.carbohydrate;</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// instantiate new object</span><br><span class="line">NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8).</span><br><span class="line">     calories(100).sodium(35).carbohydrate(27).build();</span><br></pre></td></tr></table></figure>
+<hr>
+<p>Item 3: Enforce the singleton property with a private constructor or an enum type</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Enum singleton - the preferred approach</span><br><span class="line">   public enum Elvis &#123;</span><br><span class="line">       INSTANCE;</span><br><span class="line">       public void leaveTheBuilding() &#123; ... &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>Item 4: Avoid creating unnecessary objects</p>
+<p>prefer primitives to boxed primitives, and watch out for unintentional autoboxing.</p>
+<hr>
+<p>Item 5: Eliminate obsolete object references</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public Object pop() &#123;</span><br><span class="line">     if (size == 0) throw new EmptyStackException();</span><br><span class="line">     Object result = elements[--size];</span><br><span class="line">     elements[size] = null; // Eliminate obsolete reference return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <div class="post-footer">
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2018
+  <span class="author">
+    Shiyao.Z
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
